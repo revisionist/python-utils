@@ -8,6 +8,8 @@ from .. import _persistent
 
 from ..text import tidy_and_truncate_string, truncate_string
 from ..identifiers import generate_id, generate_shorter_id
+from ..convert import get_dict_or_string
+
 from ..logging import get_calling_method_text, get_calling_method_name_quick, log_exception
 
 
@@ -74,6 +76,12 @@ class ResponseWrapper:
             raise ValueError(f"Invalid response_data type: {data}")
 
 
+    def set_plain(self, data, code):
+
+        self.code = code
+        self.response_data = get_dict_or_string(data)
+
+
     def set_exception(self, e):
 
         logger.debug(f"set_exception: {e}")
@@ -82,6 +90,15 @@ class ResponseWrapper:
         self.code = 500
         self.exception_id = exception_id
         self.set_message(message)
+
+
+    def set_error(self, message=None, code=500):
+
+        logger.debug(f"set_error: {code} - {message}")
+        self.set_status("ERROR")
+        self.code = code
+        if message:
+            self.set_message(message)
 
 
     def add_meta(self, key, value):
@@ -95,7 +112,10 @@ class ResponseWrapper:
         epoch_ms = int(current_time.timestamp() * 1000)
         execution_time_ms = int((current_time - self.start_time).total_seconds() * 1000)
 
-        return_response_data = self.response_data.copy()
+        if isinstance(self.response_data, dict):
+            return_response_data = self.response_data.copy()
+        else:
+            return_response_data = self.response_data
 
         if add_meta:
             request = self.request
@@ -112,7 +132,7 @@ class ResponseWrapper:
                 self.add_meta("exception_id", self.exception_id)
             return_response_data[META] = self.meta
 
-        if return_response_data.get('message'):
+        if isinstance(return_response_data, dict) and return_response_data.get('message'):
             msg_text_for_debug = "with message: " + tidy_and_truncate_string(return_response_data.get('message'), 120)
         else:
             msg_text_for_debug = "with no message"
