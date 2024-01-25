@@ -34,7 +34,12 @@ def get_db_conn():
     if not _persistent.has_value(PROPNAME_SQLITE_DB_FILE):
         raise ValueError("Database file path is not configured")
 
-    conn = sqlite3.connect(_persistent.get_value(PROPNAME_SQLITE_DB_FILE))
+    dbfile = _persistent.get_value(PROPNAME_SQLITE_DB_FILE)
+    try:
+        conn = sqlite3.connect(dbfile)
+    except Exception as e:
+        logger.error(f"Unable to connect to database file: {dbfile}")
+        raise e
 
     # To enable using column names to address result items
     conn.row_factory = sqlite3.Row
