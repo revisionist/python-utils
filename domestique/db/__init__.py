@@ -13,5 +13,5 @@
 # under the License.
 
 # Import specific functions from utility modules
-from ._general import conn_rollback, conn_close, concat_sql
+from ._general import conn_commit, conn_rollback, conn_close, concat_sql
 

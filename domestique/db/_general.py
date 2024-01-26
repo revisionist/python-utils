@@ -30,6 +30,16 @@ def conn_rollback(conn):
             logger.exception(f"Error during conn.rollback(): {e}")
 
 
+def conn_commit(conn):
+
+    if conn:
+        try:
+            #logger.debug("Doing conn.commit()")
+            conn.commit()
+        except Exception as e:
+            logger.exception(f"Error during conn.commit(): {e}")
+
+
 def conn_close(conn):
 
     if conn:
