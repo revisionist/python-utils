@@ -53,9 +53,7 @@ def get_exception_details(exception, tbindex=-1):
     return exception_identifier, file_name, line_number, func_name, text
 
 
-def log_exception(client_id, e, calling_method_name=None, include_traceback=True):
-
-    logger.debug(f"log_exception for {client_id}: {e}")
+def log_exception(client_id, e, calling_method_name=None, include_traceback=True, response_id=None):
 
     def append_traceback():
 
@@ -91,7 +89,12 @@ def log_exception(client_id, e, calling_method_name=None, include_traceback=True
         message = f"An error occurred in '{calling_method_name}' - {message_for_user}"
     logger.exception(message, exc_info=False)
 
-    details = f"Exception details for {exception_identifier}:"
+    details = f"Details for exception ID {exception_identifier}"
+    if response_id:
+        details += f" [response ID: {response_id}]:"
+    else:
+        details += ":"
+    
     line_prefix = f"\n {exception_identifier} - "
     details += line_prefix + f"File: {file_name}"
     details += line_prefix + f"Line: {line_number}"
