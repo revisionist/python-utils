@@ -16,7 +16,7 @@ import logging
 
 from datetime import datetime
 
-from flask import make_response
+from flask import make_response, jsonify
 
 from .. import _persistent
 
@@ -34,10 +34,13 @@ META = "_meta"
 
 class ResponseWrapper:
 
-    def __init__(self, request, client_id=None):
+    def __init__(self, request, client_id=None, calling_method_text=None, abstraction_level=3):
 
         if not request:
             raise ValueError("ResponseWrapper requires a request parameter!")
+
+        if not calling_method_text:
+            calling_method_text = get_calling_method_text(abstraction_level)
 
         self.start_time = datetime.now()
         self.response_id = generate_shorter_id()
@@ -49,7 +52,7 @@ class ResponseWrapper:
         self.code = 200
         self.client_id = client_id
         self.exception_id = None
-        self.method_text = get_calling_method_text(3)
+        self.method_text = calling_method_text
 
         debug_message = "Init ResponseWrapper: "
         if client_id:
@@ -80,6 +83,8 @@ class ResponseWrapper:
 
         if isinstance(data, dict):
             self.response_data = data.copy()
+        elif isinstance(data, list):
+            self.response_data = jsonify(data)
         elif isinstance(data, tuple):
             message, exception_identifier = data
             self.exception_id = exception_identifier
@@ -99,7 +104,7 @@ class ResponseWrapper:
     def set_exception(self, e):
 
         logger.debug(f"set_exception: {e}")
-        message, exception_id = log_exception(self.client_id, e, get_calling_method_name_quick(True))
+        message, exception_id = log_exception(self.client_id, e, self.method_text, True, self.response_id)
         self.set_status("ERROR")
         self.code = 500
         self.exception_id = exception_id
