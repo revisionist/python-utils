@@ -88,3 +88,9 @@ class Validator:
             if key not in required_keys:
                 log_func(f"{method_name}: {key} = {value}")
 
+
+    def check_all(self, noise_level=None, **values):
+
+        required_keys = list(values.keys())
+
+        self.check(required_keys=required_keys, noise_level=noise_level, **values)
