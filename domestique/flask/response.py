@@ -176,12 +176,27 @@ class ResponseWrapper:
 
 def check_response_status(response, url=None):
 
-    if not response:
+    if response is None:
         raise Exception(f"No response passed to check_response_status for URL: {url}")
     #logger.debug(f"Checking response: {response.text}")
     if not 200 <= response.status_code <= 299:
-        error_message = f"Error calling web service: {response.message}" if 'message' in response else f"Error calling web service: {response.text}"
+        error_message = f"Error calling web service: {extract_message_from_response(response)}"
         logger.error(error_message)
         if url:
             logger.error(f"URL was: {url}")
         raise Exception(error_message)
+
+
+def extract_message_from_response(response):
+
+    if response is None or not isinstance(response, requests.Response):
+        return "[Error] Invalid response object"
+
+    try:
+        json_data = response.json()
+        if "message" in json_data:
+            return f"[{response.status_code}] {json_data['message']}"
+    except JSONDecodeError:
+        pass
+
+    return f"[{response.status_code}] {response.reason}"
