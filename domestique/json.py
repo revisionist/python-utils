@@ -30,7 +30,8 @@ def get_json_str_from_dict_or_str(input_item):
         try:
             item_json = json5.loads(input_item)
         except ValueError:
-            raise ValueError(f"Invalid JSON string provided: {input_item}")
+            #raise ValueError(f"Invalid JSON string provided: {input_item}")
+            raise ValueError("Invalid JSON string provided")
     else:
         raise TypeError("input_item must be a dictionary or a valid JSON string")
 
@@ -48,7 +49,8 @@ def get_dict_from_dict_or_json_str(input_item):
         try:
             return json5.loads(input_item)
         except ValueError:
-            raise ValueError(f"Invalid JSON string provided: {input_item}")
+            #raise ValueError(f"Invalid JSON string provided: {input_item}")
+            raise ValueError("Invalid JSON string provided")
     else:
         raise TypeError("input_item must be a dictionary or a valid JSON string")
 
