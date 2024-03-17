@@ -53,3 +53,4 @@ def conn_close(conn):
 def concat_sql(sql_parts):
 
     return ' '.join(s.strip() for s in sql_parts if s.strip())
+
