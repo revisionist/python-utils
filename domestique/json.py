@@ -13,6 +13,7 @@
 # under the License.
 
 import logging
+import json
 import json5
 
 logger = logging.getLogger(__name__)
@@ -24,7 +25,7 @@ def get_json_str_from_dict_or_str(input_item):
         raise ValueError("input_item must be a non-empty dictionary or a valid JSON string")
 
     if isinstance(input_item, dict):
-        item_json = json5.dumps(input_item)
+        item_json = json.dumps(input_item)
     elif isinstance(input_item, str):
         try:
             item_json = json5.loads(input_item)
