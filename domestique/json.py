@@ -13,7 +13,7 @@
 # under the License.
 
 import logging
-import json
+import json5
 
 logger = logging.getLogger(__name__)
 
@@ -24,11 +24,11 @@ def get_json_str_from_dict_or_str(input_item):
         raise ValueError("input_item must be a non-empty dictionary or a valid JSON string")
 
     if isinstance(input_item, dict):
-        item_json = json.dumps(input_item)
+        item_json = json5.dumps(input_item)
     elif isinstance(input_item, str):
         try:
-            item_json = json.loads(input_item)
-        except json.JSONDecodeError:
+            item_json = json5.loads(input_item)
+        except json5.JSONDecodeError:
             raise ValueError("Invalid JSON string provided")
     else:
         raise TypeError("input_item must be a dictionary or a valid JSON string")
@@ -45,8 +45,8 @@ def get_dict_from_dict_or_json_str(input_item):
         return input_item
     elif isinstance(input_item, str):
         try:
-            return json.loads(input_item)
-        except json.JSONDecodeError:
+            return json5.loads(input_item)
+        except json5.JSONDecodeError:
             raise ValueError("Invalid JSON string provided")
     else:
         raise TypeError("input_item must be a dictionary or a valid JSON string")
@@ -57,10 +57,10 @@ def get_list_from_json_string(json_string):
     if json_string is None:
         return None
     try:
-        parsed_data = json.loads(json_string)
+        parsed_data = json5.loads(json_string)
         if isinstance(parsed_data, list):
             return parsed_data
-    except json.JSONDecodeError:
+    except json5.JSONDecodeError:
         pass
 
     return None
