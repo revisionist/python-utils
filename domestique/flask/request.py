@@ -50,8 +50,8 @@ def get_reqjson(request):
         except Exception as e:
             _handle_bad_request_json(request, get_calling_method_text(), e)
 
-        logger.debug(f"Type (reqjson): {type(reqjson)}")
-        logger.debug(f"Request JSON: {reqjson}")
+        #logger.debug(f"Type (reqjson): {type(reqjson)}")
+        #logger.debug(f"Request JSON: {reqjson}")
 
         return reqjson
 
