@@ -144,21 +144,24 @@ class SQLGenerator:
             self.extra.append(extra_clause)
 
 
-    def generate_sql(self):
+    def generate_sql(self, distinct=False):
 
-        query = ''
+        query = ""
+
+        sel = "SELECT DISTINCT " if distinct else "SELECT "
+
         if self.selects:
-            query += 'SELECT ' + ', '.join(self.selects) + ' '
+            query += sel + ", ".join(self.selects) + " "
         if self.froms:
-            query += 'FROM ' + ', '.join(self.froms) + ' '
+            query += "FROM " + ", ".join(self.froms) + " "
         if self.wheres:
-            query += 'WHERE ' + ' AND '.join(self.wheres) + ' '
+            query += "WHERE " + " AND ".join(self.wheres) + " "
         if self.groups:
-            query += 'GROUP BY ' + ', '.join(self.groups) + ' '
+            query += "GROUP BY " + ", ".join(self.groups) + " "
         if self.sorts:
-            query += 'ORDER BY ' + ', '.join(self.sorts) + ' '
+            query += "ORDER BY " + ", ".join(self.sorts) + " "
         if self.extra:
-            query += ' ' + ', '.join(self.extra) + ' '
+            query += " " + ", ".join(self.extra) + " "
         return query.strip()
 
 
@@ -167,7 +170,7 @@ class SQLGenerator:
         return self.parameters
 
 
-    def get_query(self):
+    def get_query(self, distinct=False):
 
-        return self.generate_sql(), self.get_parameters()
+        return self.generate_sql(distinct=distinct), self.get_parameters()
     
