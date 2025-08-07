@@ -1,4 +1,4 @@
-# Copyright 2023-2024 David Goddard.
+# Copyright 2023-2025 David Goddard.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain a
@@ -66,19 +66,19 @@ def get_reqjson(request):
         raise e
 
 
-def get_arg(request, name, default_val=None):
+def get_arg(request, name, default_val=None, type=None):
 
     if not request or not name:
         raise ValueError(f"Missing required request/arg name from '{get_calling_method_text()}'!")
 
-    val = request.args.get(name, default_val)
+    val = request.args.get(name, default=default_val, type=type)
     logger.debug(f"Value for request argument '{name}': {val}")
     return val
 
 
-def get_required_arg(request, name):
+def get_required_arg(request, name, type=None):
 
-    val = get_arg(request, name, None)
+    val = get_arg(request, name, default=None, type=type)
     if not val:
         message = f"Missing '{name}' parameter"
         logger.error(f"{message}:\n{request}")
