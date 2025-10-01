@@ -76,7 +76,7 @@ class ResponseFormatter:
             client_id=self.client_id,
             e=e,
             calling_method_name=self.method_text,
-            include_traceback=False,
+            include_traceback=True,
             response_id=self.response_id,
         )
         self.exception_id = exception_id
