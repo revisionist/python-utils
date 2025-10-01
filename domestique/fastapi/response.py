@@ -64,13 +64,12 @@ class ResponseFormatter:
         return 500
 
 
-    def generate_response_with_data(self, data, status_code=200, exception_id=None):
-
+    def generate_response_with_data(self, data, status_code=200, exception_id=None, headers=None):
         self.exception_id = exception_id
-        return self._generate(data, status_code)
+        return self._generate(data, status_code, headers=headers)
 
 
-    def generate_response_with_exception(self, e, status_code: int | None = None):
+    def generate_response_with_exception(self, e, status_code: int | None = None, headers=None):
 
         user_message, exception_id = log_exception(
             client_id=self.client_id,
@@ -89,10 +88,10 @@ class ResponseFormatter:
 
         logger.info(f"[{self.response_id}] returning error {status_code} ({self.method_text}) ref={exception_id}")
 
-        return self._generate(user_message, status_code)
+        return self._generate(user_message, status_code, headers=headers)
 
 
-    def _generate(self, data, status_code):
+    def _generate(self, data, status_code, headers=None):
 
         now = datetime.utcnow()
         execution_time_ms = int((now - self.start_time).total_seconds() * 1000)
@@ -130,4 +129,4 @@ class ResponseFormatter:
 
         logger.debug(f"{self.response_id} [{status_code}] from '{self.method_text}' {preview}")
 
-        return JSONResponse(status_code=status_code, content=response_data)
+        return JSONResponse(status_code=status_code, content=response_data, headers=headers)
