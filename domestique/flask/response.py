@@ -128,59 +128,59 @@ class ResponseWrapper:
         self.meta[key] = value
 
 
-def generate_response(self, add_meta=True, headers=None):
+    def generate_response(self, add_meta=True, headers=None):
 
-    current_time = datetime.now()
-    epoch_ms = int(current_time.timestamp() * 1000)
-    execution_time_ms = int((current_time - self.start_time).total_seconds() * 1000)
+        current_time = datetime.now()
+        epoch_ms = int(current_time.timestamp() * 1000)
+        execution_time_ms = int((current_time - self.start_time).total_seconds() * 1000)
 
-    if isinstance(self.response_data, dict):
-        return_response_data = self.response_data.copy()
-    else:
-        return_response_data = self.response_data
+        if isinstance(self.response_data, dict):
+            return_response_data = self.response_data.copy()
+        else:
+            return_response_data = self.response_data
 
-    if add_meta:
-        request = self.request
-        self.add_meta("response_id", self.response_id)
-        if self.client_id:
-            self.add_meta("client_id", self.client_id)
-        self.add_meta("host", request.host)
-        self.add_meta("path", request.path)
-        self.add_meta("method", request.method)
-        self.add_meta("handler", self.method_text)
-        self.add_meta("timestamp_ms", epoch_ms)
-        self.add_meta("timestamp_str", str(current_time))
-        self.add_meta("execution_time_ms", execution_time_ms)
-        if self.exception_id:
-            self.add_meta("exception_id", self.exception_id)
-        if isinstance(return_response_data, dict):
-            return_response_data[META] = self.meta
+        if add_meta:
+            request = self.request
+            self.add_meta("response_id", self.response_id)
+            if self.client_id:
+                self.add_meta("client_id", self.client_id)
+            self.add_meta("host", request.host)
+            self.add_meta("path", request.path)
+            self.add_meta("method", request.method)
+            self.add_meta("handler", self.method_text)
+            self.add_meta("timestamp_ms", epoch_ms)
+            self.add_meta("timestamp_str", str(current_time))
+            self.add_meta("execution_time_ms", execution_time_ms)
+            if self.exception_id:
+                self.add_meta("exception_id", self.exception_id)
+            if isinstance(return_response_data, dict):
+                return_response_data[META] = self.meta
 
-    if isinstance(return_response_data, dict) and return_response_data.get('message'):
-        msg_text_for_debug = "with message: " + tidy_and_truncate_string(return_response_data.get('message'), 120)
-    else:
-        msg_text_for_debug = "with no message"
+        if isinstance(return_response_data, dict) and return_response_data.get('message'):
+            msg_text_for_debug = "with message: " + tidy_and_truncate_string(return_response_data.get('message'), 120)
+        else:
+            msg_text_for_debug = "with no message"
 
-    logger.debug(f"{self.response_id} [{self.code}] from '{self.method_text}' {msg_text_for_debug}")
+        logger.debug(f"{self.response_id} [{self.code}] from '{self.method_text}' {msg_text_for_debug}")
 
-    resp = make_response(return_response_data, self.code)
-    if headers:
-        for k, v in headers.items():
-            resp.headers[k] = v
+        resp = make_response(return_response_data, self.code)
+        if headers:
+            for k, v in headers.items():
+                resp.headers[k] = v
 
-    return resp
-
-
-def generate_response_with_exception(self, e, headers=None):
-
-    self.set_exception(e)
-    return self.generate_response(headers=headers)
+        return resp
 
 
-def generate_response_with_data(self, data, code, exception_id=None, headers=None):
+    def generate_response_with_exception(self, e, headers=None):
 
-    self.set_data(data, code, exception_id)
-    return self.generate_response(headers=headers)
+        self.set_exception(e)
+        return self.generate_response(headers=headers)
+
+
+    def generate_response_with_data(self, data, code, exception_id=None, headers=None):
+
+        self.set_data(data, code, exception_id)
+        return self.generate_response(headers=headers)
 
 
 def check_response_status(response, url=None):
