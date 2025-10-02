@@ -65,6 +65,7 @@ class ResponseFormatter:
 
 
     def generate_response_with_data(self, data, status_code=200, exception_id=None, headers=None):
+
         self.exception_id = exception_id
         return self._generate(data, status_code, headers=headers)
 

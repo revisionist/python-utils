@@ -78,8 +78,8 @@ def get_arg(request, name, default_val=None, type=None):
 
 def get_required_arg(request, name, type=None):
 
-    val = get_arg(request, name, default=None, type=type)
-    if not val:
+    val = get_arg(request, name, default_val=None, type=type)
+    if val is None or (isinstance(val, str) and val.strip() == ""):
         message = f"Missing '{name}' parameter"
         logger.error(f"{message}:\n{request}")
         raise ValueError(message)
